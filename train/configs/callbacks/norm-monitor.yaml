@@ -1,0 +1,2 @@
+norm_monitor:
+  _target_: norm_monitor.NormMonitor

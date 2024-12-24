@@ -1,0 +1,141 @@
+CONFIG
+├── trainer
+│   └── _target_: pytorch_lightning.Trainer                                                         
+│       accelerator: gpu                                                                            
+│       min_epochs: 1                                                                               
+│       max_epochs: 1000                                                                            
+│       strategy: auto                                                                              
+│       devices: 1                                                                                  
+│       num_nodes: 1                                                                                
+│       accumulate_grad_batches: 32                                                                 
+│       max_steps: 20000                                                                            
+│       val_check_interval: 32000                                                                   
+│       check_val_every_n_epoch: null                                                               
+│       precision: bf16                                                                             
+│       gradient_clip_val: 1.0                                                                      
+│                                                                                                   
+├── model
+│   └── _target_: mambapp.MambaLMHeadModel                                                          
+│       _recursive_: true                                                                           
+│       config:                                                                                     
+│         _target_: mambapp.MambaConfig                                                             
+│         reorder_and_upcast_attn: false                                                            
+│         scale_attn_by_inverse_layer_idx: true                                                     
+│         n_positions: 2048                                                                         
+│         n_embd: 1024                                                                              
+│         n_head: 16                                                                                
+│         n_layer: 46                                                                               
+│         residual_in_fp32: true                                                                    
+│         use_flash_attn: true                                                                      
+│         fused_dropout_add_ln: true                                                                
+│         fused_mlp: true                                                                           
+│         fused_bias_fc: true                                                                       
+│         pad_vocab_size_multiple: 16                                                               
+│         rms_norm: false                                                                           
+│         fused_add_norm: false                                                                     
+│                                                                                                   
+├── datamodule
+│   └── _target_: language_modeling_hf.LMDataModule                                                 
+│       dataset_name: DKYoon/SlimPajama-6B                                                          
+│       dataset_config_name: default                                                                
+│       tokenizer_name: gpt2                                                                        
+│       cache_dir: /content/drive/MyDrive/mamba-bare-main/train/data//SlimPajama-6B/cache           
+│       max_length: 2048                                                                            
+│       add_eos: true                                                                               
+│       batch_size: 8                                                                               
+│       batch_size_eval: 32                                                                         
+│       num_workers: 1                                                                              
+│       use_shmem: false                                                                            
+│       shuffle: true                                                                               
+│       pin_memory: true                                                                            
+│       fault_tolerant: true                                                                        
+│       ddp: false                                                                                  
+│                                                                                                   
+├── train
+│   └── optimizer:                                                                                  
+│         _target_: apex.optimizers.FusedAdam                                                       
+│         adam_w_mode: true                                                                         
+│         lr: 0.0002                                                                                
+│         weight_decay: 0.01                                                                        
+│         betas:                                                                                    
+│         - 0.9                                                                                     
+│         - 0.95                                                                                    
+│       scheduler:                                                                                  
+│         _target_: train.optim.timm_lr_scheduler.TimmCosineLRScheduler                             
+│         t_in_epochs: false                                                                        
+│         t_initial: 19800                                                                          
+│         warmup_lr_init: 1.0e-06                                                                   
+│         warmup_t: 200                                                                             
+│         lr_min: 8.0e-05                                                                           
+│         warmup_prefix: true                                                                       
+│       gpu_mem: 23                                                                                 
+│       global_batch_size: 256                                                                      
+│       optimizer_param_grouping:                                                                   
+│         bias_weight_decay: false                                                                  
+│         normalization_weight_decay: false                                                         
+│       loss_fn:                                                                                    
+│         _target_: flash_attn.losses.cross_entropy.CrossEntropyLoss                                
+│         inplace_backward: true                                                                    
+│                                                                                                   
+├── eval
+│   └── metrics:                                                                                    
+│         ppl:                                                                                      
+│           _target_: perplexity.Perplexity                                                         
+│         num-tokens:                                                                               
+│           _target_: num_tokens.NumTokens                                                          
+│       log_on_step: true                                                                           
+│       ckpt: //content/drive/MyDrive/mamba-bare-main/train/last.ckpt                               
+│                                                                                                   
+├── callbacks
+│   └── rich_model_summary:                                                                         
+│         _target_: pytorch_lightning.callbacks.RichModelSummary                                    
+│       model_checkpoint:                                                                           
+│         _target_: pytorch_lightning.callbacks.ModelCheckpoint                                     
+│         monitor: val/loss                                                                         
+│         mode: min                                                                                 
+│         save_top_k: 3                                                                             
+│         save_last: true                                                                           
+│         verbose: false                                                                            
+│         dirpath: ../checkpoints/02-21-mambapp-360m                                                
+│         filename: step_{step}                                                                     
+│         auto_insert_metric_name: false                                                            
+│         every_n_train_steps: 1000                                                                 
+│       early_stopping: null                                                                        
+│       learning_rate_monitor:                                                                      
+│         _target_: pytorch_lightning.callbacks.LearningRateMonitor                                 
+│         logging_interval: step                                                                    
+│       speed_monitor:                                                                              
+│         _target_: speed_monitor.SpeedMonitor                                                      
+│         intra_step_time: true                                                                     
+│         inter_step_time: true                                                                     
+│         epoch_time: true                                                                          
+│       loss_scale_monitor:                                                                         
+│         _target_: loss_scale_monitor.LossScaleMonitor                                             
+│       params_log:                                                                                 
+│         _target_: params_log.ParamsLog                                                            
+│         total_params_log: true                                                                    
+│         trainable_params_log: true                                                                
+│         non_trainable_params_log: true                                                            
+│       gpu_affinity:                                                                               
+│         _target_: gpu_affinity.GpuAffinity                                                        
+│       norm_monitor:                                                                               
+│         _target_: norm_monitor.NormMonitor                                                        
+│                                                                                                   
+├── logger
+│   └── wandb:                                                                                      
+│         _target_: pytorch_lightning.loggers.wandb.WandbLogger                                     
+│         project: mamba_bare                                                                       
+│         name: 02-21-mambapp-360m                                                                  
+│         save_dir: .                                                                               
+│         mode: online                                                                              
+│         id: 02-21-mambapp-360m                                                                    
+│         log_model: false                                                                          
+│         prefix: ''                                                                                
+│         job_type: train                                                                           
+│         group: ''                                                                                 
+│         tags: []                                                                                  
+│                                                                                                   
+├── seed
+│   └── 1111                                                                                        
+└── name
+    └── 02-21-mambapp-360m                                                                          

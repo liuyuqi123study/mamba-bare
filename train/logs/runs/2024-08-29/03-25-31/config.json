@@ -1,0 +1,16 @@
+{
+    "d_model": 768,
+    "n_layer": 24,
+    "rms_norm": true,
+    "residual_in_fp32": true,
+    "pad_vocab_size_multiple": 16,
+    "n_positions":2048,
+    "n_embd":1024,
+    "reorder_and_upcast_attn": false,
+    "scale_attn_by_inverse_layer_idx": true,
+    "n_head":16,
+    "use_flash_attn": true,
+    "fused_dropout_add_ln": true,                                                               
+    "fused_mlp": true,                                                                           
+    "fused_bias_fc": true                                                                  
+}

@@ -1,0 +1,5 @@
+[2024-09-11 02:42:12,840][numexpr.utils][INFO] - NumExpr defaulting to 8 threads.
+[2024-09-11 02:42:13,014][datasets][INFO] - PyTorch version 2.4.0+cu121 available.
+[2024-09-11 02:42:13,017][datasets][INFO] - Polars version 0.20.2 available.
+[2024-09-11 02:42:13,018][datasets][INFO] - TensorFlow version 2.17.0 available.
+[2024-09-11 02:42:13,020][datasets][INFO] - JAX version 0.4.26 available.

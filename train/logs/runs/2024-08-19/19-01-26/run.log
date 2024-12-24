@@ -1,0 +1,11 @@
+[2024-08-19 19:01:28,636][numexpr.utils][INFO] - NumExpr defaulting to 12 threads.
+[2024-08-19 19:01:28,831][datasets][INFO] - PyTorch version 2.3.1+cu121 available.
+[2024-08-19 19:01:28,833][datasets][INFO] - Polars version 0.20.2 available.
+[2024-08-19 19:01:28,834][datasets][INFO] - TensorFlow version 2.17.0 available.
+[2024-08-19 19:01:28,835][datasets][INFO] - JAX version 0.4.26 available.
+[2024-08-19 19:01:31,567][utils.utils][INFO] - Disabling python warnings! <config.ignore_warnings=True>
+[2024-08-19 19:01:31,689][seq][INFO] - Instantiating datamodule <language_modeling_hf.LMDataModule>
+[2024-08-19 19:01:31,694][utils.utils][INFO] - Load from cache at /content/drive/MyDrive/mamba-bare-main/train/data/SlimPajama-6B/cache/tokenizer_name-gpt2-val_ratio-0.0005-val_split_seed-2357-add_eos-True-detokenize-False
+[2024-08-19 19:01:31,798][utils.utils][INFO] - Load from cache at /content/drive/MyDrive/mamba-bare-main/train/data/SlimPajama-6B/cache/tokenizer_name-gpt2-val_ratio-0.0005-val_split_seed-2357-add_eos-True-detokenize-False
+[2024-08-19 19:01:31,919][seq][INFO] - Instantiating model <mambapp.MambaLMHeadModel>
+[2024-08-19 19:01:37,459][deploy][INFO] - Loading checkpoint from //content/drive/MyDrive/mamba-bare-main/train/last.ckpt

@@ -1,0 +1,60 @@
+# @package _global_
+defaults:
+  - //content/drive/MyDrive/mamba-bare-main/train/configs/experiment/pile/gpt3m-flash.yaml
+  - override /datamodule: thepile
+  - override /model: mambapp
+
+train:
+  optimizer:
+    lr: 0.0008
+    betas: [0.9, 0.95]
+    _target_: apex.optimizers.FusedAdam
+    adam_w_mode: true
+    weight_decay: 0.1
+
+  scheduler:
+    lr_min: 0.00008
+    _target_: train.optim.timm_lr_scheduler.TimmCosineLRScheduler
+    warmup_t: 200
+    t_initial: 19800
+    t_in_epochs: false
+    warmup_prefix: true
+    warmup_lr_init: 0.000001
+
+trainer:
+  # this interval is in terms of batch_idx not in terms of global_step, so we need 
+  # to multiply by accumulate_grad_batches
+  val_check_interval: ${eval:1000 * ${.accumulate_grad_batches}}
+  max_steps: 20000
+
+
+datamodule:
+  batch_size: 24  # per gpu
+  batch_size_eval: 24
+  max_length: 2048
+
+expt_name: 02-21-mambapp-130m-pile
+name: ${.expt_name}
+
+callbacks:
+  model_checkpoint:
+    dirpath: ../checkpoints/${expt_name}
+    monitor: val/loss
+    mode: min
+    save_top_k: 3
+    save_last: True
+    every_n_train_steps: 1000
+
+resume: True
+
+model:
+  config:
+    d_model: 768
+    n_layer: 24
+    rms_norm: true
+    residual_in_fp32: true
+    pad_vocab_size_multiple: 16
+
+
+eval:
+  ckpt: '//content/drive/MyDrive/mamba-bare-main/train/130M_thepile_step_20000'

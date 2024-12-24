@@ -1,0 +1,7 @@
+[2024-09-15 15:34:14,167][numexpr.utils][INFO] - NumExpr defaulting to 12 threads.
+[2024-09-15 15:34:14,345][datasets][INFO] - PyTorch version 2.4.0+cu121 available.
+[2024-09-15 15:34:14,348][datasets][INFO] - Polars version 0.20.2 available.
+[2024-09-15 15:34:14,349][datasets][INFO] - TensorFlow version 2.17.0 available.
+[2024-09-15 15:34:14,350][datasets][INFO] - JAX version 0.4.26 available.
+[2024-09-15 15:34:21,404][utils.utils][INFO] - Disabling python warnings! <config.ignore_warnings=True>
+[2024-09-15 15:34:21,532][seq][INFO] - Instantiating datamodule <train.datamodules.language_modeling_hf.LMDataModule>
