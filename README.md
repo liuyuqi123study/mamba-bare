@@ -74,4 +74,5 @@ This project borrows code from a several open source projects:
 - [FlashAttention](https://github.com/Dao-AILab/flash-attention). 
 - [Mamba](https://github.com/state-spaces/mamba/tree/main).
 - [based](https://github.com/HazyResearch/based/tree/main).
+- [Evaluation](https://github.com/EleutherAI/lm-evaluation-harness)
 
